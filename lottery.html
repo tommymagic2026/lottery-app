@@ -1169,7 +1169,7 @@
             return { match: false, prize: 0, level: 0 };
         }
 
-        async function checkAndUpdateWin(id) {
+        async function checkAndUpdateWin(id, evt) {
             const { data: selection, error: fetchErr } = await supabaseClient
                 .from('selections')
                 .select('*')
@@ -1181,7 +1181,8 @@
             selection.lotteryName = selection.lottery_name;
             selection.kl8Count = selection.kl8_count;
 
-            const btn = event.target;
+            const btn = (evt && evt.target) || (window.event && window.event.target);
+            if (!btn) return;
             btn.disabled = true;
             btn.textContent = '查询中...';
 
@@ -1264,7 +1265,7 @@
                         winBadge = '<span class="win-badge nowin">谢谢参与</span>';
                     }
                 } else {
-                    checkBtn = `<button class="check-btn" onclick="checkAndUpdateWin(${selection.id})">查询</button>`;
+                    checkBtn = `<button class="check-btn" onclick="checkAndUpdateWin(${selection.id}, event)">查询</button>`;
                     winBadge = '<span class="win-badge nowin">未查询</span>';
                 }
 
